@@ -75,13 +75,38 @@
     }
 
     .message {
-        background: #fff0f0;
-        color: #d93025;
-        border: 1px solid #ffd0d0;
         padding: 12px 14px;
         border-radius: 8px;
         font-size: 14px;
         margin-bottom: 8px;
+    }
+
+    /* Success message - GREEN */
+    .message.success {
+        background: #effaf3;
+        color: #218838;
+        border: 1px solid #b7e4c7;
+    }
+
+    /* Error message - RED */
+    .message.error {
+        background: #fff0f0;
+        color: #d93025;
+        border: 1px solid #ffd0d0;
+    }
+
+    /* Warning message - YELLOW */
+    .message.warning {
+        background: #fff8e6;
+        color: #856404;
+        border: 1px solid #ffe8a1;
+    }
+
+    /* Information message - BLUE */
+    .message.info {
+        background: #eef6ff;
+        color: #0056b3;
+        border: 1px solid #b8daff;
     }
 
     .login-button {
@@ -173,7 +198,7 @@
 
                 {% for message in messages %}
 
-                    <div class="message">
+                    <div class="message {{ message.tags }}">
                         {{ message }}
                     </div>
 
