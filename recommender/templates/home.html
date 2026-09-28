@@ -1,0 +1,333 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+    Home  
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 25px;
+    }
+
+    .course-card {
+        background: white;
+        border: 1px solid #e8e8e8;
+        border-radius: 16px;
+        padding: 22px;
+
+        text-decoration: none;
+        color: #333;
+
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+
+        transition: all 0.25s ease;
+
+        min-height: 100px;
+
+        display: flex;
+        align-items: center;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+
+        border-color: #667eea;
+
+        box-shadow: 0 12px 25px rgba(102, 126, 234, 0.15);
+
+        color: #667eea;
+    }
+
+    .course-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 42px;
+        height: 42px;
+
+        margin-right: 15px;
+
+        border-radius: 12px;
+
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #764ba2
+        );
+
+        color: white;
+
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    }
+
+    .course-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1d2939;
+    }
+
+    .course-stats {
+        font-size: 13px;
+        color: #667085;
+    }
+    .no-courses {
+        grid-column: 1 / -1;
+
+        text-align: center;
+
+        padding: 40px;
+
+        background: #f8f8f8;
+
+        border-radius: 14px;
+
+        color: #777;
+    }
+
+
+    @media (max-width: 600px) {
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<form method="GET" class="course-filter-form"> 
+    <input 
+        type="text" 
+        name="search" 
+        value="{{ search }}" 
+        placeholder="Search courses..." 
+    > 
+    
+    <select 
+        name="sort" 
+        onchange="this.form.submit()" 
+    > 
+    
+        <option 
+            value="recommended" 
+            {% if sort == "recommended" %}selected{% endif %} 
+        > 
+            Recommended 
+        </option> 
+        
+        <option 
+            value="most_viewed" 
+            {% if sort == "most_viewed" %}selected{% endif %} 
+        > 
+            Most Viewed 
+        </option> 
+        
+        <option 
+            value="most_liked" 
+            {% if sort == "most_liked" %}selected{% endif %} 
+        > 
+            Most Liked 
+        </option> 
+        
+    </select> 
+    <button 
+        type="submit"
+    > 
+        Search 
+    </button> 
+</form>
+
+<div class="course-grid">
+
+    {% for course in page_obj %}
+
+        <a
+            href="{% url 'course_detail' course.course_id %}"
+            class="course-card"
+        >
+
+            <span class="course-number">
+                {{ forloop.counter }}
+            </span>
+            
+            <span class="course-details">
+                <span class="course-name">
+                    {{ course.course_name }}
+                </span>
+                
+                <span class="course-stats">
+                    👁 {{ course.view_count }} views
+                    &nbsp;&nbsp;
+                    ♥ {{ course.like_count }} likes    
+                </span>
+            </span>
+        </a>
+
+    {% empty %}
+
+        <div class="no-courses">
+            No courses found.
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+
+<style>
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+
+    .pagination-info {
+        color: #666;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+
+    .pagination-button,
+    .pagination-current {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 42px;
+        height: 42px;
+        padding: 0 14px;
+
+        border-radius: 10px;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition: all 0.2s ease;
+    }
+
+    /* Normal buttons */
+    .pagination-button {
+        background: #ffffff;
+        color: #667eea;
+        border: 1px solid #e2e5f5;
+    }
+
+    .pagination-button:hover {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #ffffff;
+        border-color: transparent;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 6px 15px rgba(102, 126, 234, 0.25);
+    }
+
+    /* Current page */
+    .pagination-current {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #ffffff;
+
+        box-shadow:
+            0 6px 15px rgba(102, 126, 234, 0.25);
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+
+        .pagination-container {
+            gap: 6px;
+            margin: 30px 0;
+        }
+
+        .pagination-info {
+            width: 100%;
+            text-align: center;
+            margin-right: 0;
+            margin-bottom: 8px;
+        }
+
+        .pagination-button,
+        .pagination-current {
+            min-width: 38px;
+            height: 38px;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+    }
+</style>
+
+
+<div class="pagination-container">
+
+    <!-- Page information -->
+    <span class="pagination-info">
+        Page {{ page_obj.number }}
+        of
+        {{ page_obj.paginator.num_pages }}
+    </span>
+
+
+    <!-- First + Previous -->
+    {% if page_obj.has_previous %}
+
+        <a
+            href="?page=1&search={{ search }}"
+            class="pagination-button"
+        >
+            First
+        </a>
+
+        <a
+            href="?page={{ page_obj.previous_page_number }}&search={{ search }}"
+            class="pagination-button"
+        >
+            ← Previous
+        </a>
+
+    {% endif %}
+
+
+    <!-- Current page -->
+    <span class="pagination-current">
+        {{ page_obj.number }}
+    </span>
+
+
+    <!-- Next + Last -->
+    {% if page_obj.has_next %}
+
+        <a
+            href="?page={{ page_obj.next_page_number }}&search={{ search }}"
+            class="pagination-button"
+        >
+            Next →
+        </a>
+
+        <a
+            href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}"
+            class="pagination-button"
+        >
+            Last
+        </a>
+
+    {% endif %}
+
+</div>
+{% endblock %}

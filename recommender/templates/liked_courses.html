@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}
+Liked Courses
+{% endblock %}
+
+{% block content %}
+
+<style>
+.liked-courses-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.liked-courses-container h1 {
+    margin-bottom: 25px;
+}
+
+.liked-courses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.liked-course-card {
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.liked-course-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.liked-course-university {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.liked-course-info {
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.view-course-button {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background-color: #4f46e5;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.view-course-button:hover {
+    background-color: #4338ca;
+}
+
+.no-liked-courses {
+    padding: 40px;
+    text-align: center;
+    color: #777;
+}
+</style>
+
+<div class="liked-courses-container">
+
+    <h1>My Liked Courses</h1>
+
+    {% if liked_courses %}
+
+        <div class="liked-courses-list">
+
+            {% for course in liked_courses %}
+
+                <div class="liked-course-card">
+
+                    <div class="liked-course-name">
+                        {{ course.course_name }}
+                    </div>
+
+                    <div class="liked-course-university">
+                        {{ course.university }}
+                    </div>
+
+                    <div class="liked-course-info">
+
+                        <span>
+                            Difficulty:
+                            {{ course.difficulty }}
+                        </span>
+
+                        <span>
+                            ★ {{ course.rating }}
+                        </span>
+
+                    </div>
+
+                    <a
+                        href="{% url 'course_detail' course.course_id %}"
+                        class="view-course-button"
+                    >
+                        View Course
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-liked-courses">
+            You haven't liked any courses yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

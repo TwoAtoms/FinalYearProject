@@ -1,0 +1,697 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Student Profile
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .profile-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .profile-header {
+        margin-bottom: 25px;
+    }
+
+    .profile-header h1 {
+        margin: 0 0 8px 0;
+        font-size: 30px;
+        color: #222;
+    }
+
+    .profile-header p {
+        margin: 0;
+        color: #667085;
+        font-size: 15px;
+    }
+
+
+    /* =========================
+       PROFILE CARD
+    ========================= */
+
+    .profile-card {
+        background: white;
+
+        border: 1px solid #e8e8e8;
+
+        border-radius: 18px;
+
+        padding: 30px;
+
+        box-shadow:
+            0 5px 15px rgba(0, 0, 0, 0.06);
+    }
+
+
+    /* =========================
+       FORM FIELDS
+    ========================= */
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: #333;
+
+        font-size: 14px;
+
+        font-weight: 700;
+    }
+
+    .form-help {
+        margin-bottom: 12px;
+
+        color: #888;
+
+        font-size: 13px;
+    }
+
+    .profile-input,
+    .profile-select {
+        width: 100%;
+
+        padding: 13px 15px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 10px;
+
+        font-size: 15px;
+
+        background: white;
+
+        outline: none;
+
+        transition: all 0.2s ease;
+    }
+
+    .profile-input:focus,
+    .profile-select:focus {
+        border-color: #667eea;
+
+        box-shadow:
+            0 0 0 3px rgba(
+                102,
+                126,
+                234,
+                0.15
+            );
+    }
+
+
+    /* =========================
+       COURSE SEARCH
+    ========================= */
+
+    .course-search {
+        width: 100%;
+
+        padding: 13px 15px;
+
+        margin-bottom: 15px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 10px;
+
+        font-size: 14px;
+
+        outline: none;
+    }
+
+    .course-search:focus {
+        border-color: #667eea;
+
+        box-shadow:
+            0 0 0 3px rgba(
+                102,
+                126,
+                234,
+                0.15
+            );
+    }
+
+
+    /* =========================
+       SELECTED COUNT
+    ========================= */
+
+    .selected-count {
+        margin-bottom: 15px;
+
+        color: #667085;
+
+        font-size: 13px;
+
+        font-weight: 600;
+    }
+
+
+    /* =========================
+       COURSE LIST
+    ========================= */
+
+    .course-list {
+        max-height: 500px;
+
+        overflow-y: auto;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 12px;
+
+        background: #fafafa;
+    }
+
+    .course-option {
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 13px 15px;
+
+        border-bottom: 1px solid #eeeeee;
+
+        cursor: pointer;
+
+        transition: background 0.15s ease;
+    }
+
+    .course-option:last-child {
+        border-bottom: none;
+    }
+
+    .course-option:hover {
+        background: #f0f2ff;
+    }
+
+    .course-option input {
+        margin-top: 3px;
+
+        width: 17px;
+
+        height: 17px;
+
+        accent-color: #667eea;
+
+        cursor: pointer;
+
+        flex-shrink: 0;
+    }
+
+    .course-name {
+        color: #333;
+
+        font-size: 14px;
+
+        line-height: 1.4;
+    }
+
+    .course-university {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #888;
+
+        font-size: 12px;
+    }
+
+
+    /* =========================
+       NO RESULTS
+    ========================= */
+
+    .no-results {
+        display: none;
+
+        padding: 30px;
+
+        text-align: center;
+
+        color: #888;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .save-button {
+        width: 100%;
+
+        padding: 14px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #667eea,
+                #764ba2
+            );
+
+        color: white;
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: all 0.2s ease;
+    }
+
+    .save-button:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(
+                102,
+                126,
+                234,
+                0.30
+            );
+    }
+
+
+    /* =========================
+       MESSAGES
+    ========================= */
+
+    .success-message {
+        margin-bottom: 20px;
+
+        padding: 13px 15px;
+
+        border-radius: 10px;
+
+        background: #ecfdf3;
+
+        border: 1px solid #abefc6;
+
+        color: #067647;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       ERROR
+    ========================= */
+
+    .error-message {
+        margin-bottom: 20px;
+
+        padding: 13px 15px;
+
+        border-radius: 10px;
+
+        background: #fff0f0;
+
+        border: 1px solid #ffd0d0;
+
+        color: #d93025;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        .profile-card {
+            padding: 20px;
+        }
+
+        .profile-header h1 {
+            font-size: 25px;
+        }
+
+        .course-list {
+            max-height: 400px;
+        }
+    }
+
+</style>
+
+
+<div class="profile-container">
+
+    <!-- Header -->
+
+    <div class="profile-header">
+
+        <h1>
+            Student Profile
+        </h1>
+
+        <p>
+            Tell us about your academic background
+            and the courses you have completed.
+        </p>
+
+    </div>
+
+
+    <!-- Django messages -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="success-message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- Form -->
+
+    <div class="profile-card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Programme -->
+
+            <div class="form-section">
+
+                <label
+                    class="form-label"
+                    for="{{ form.programme.id_for_label }}"
+                >
+                    Programme
+                </label>
+
+                <div class="form-help">
+                    Enter your current degree or programme.
+                </div>
+
+                <input
+                    type="text"
+                    name="{{ form.programme.name }}"
+                    id="{{ form.programme.id_for_label }}"
+                    value="{{ form.programme.value|default:'' }}"
+                    placeholder="e.g. Bachelor of Data Science"
+                    class="profile-input"
+                >
+
+                {% if form.programme.errors %}
+
+                    <div class="error-message">
+                        {{ form.programme.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Year -->
+
+            <div class="form-section">
+
+                <label
+                    class="form-label"
+                    for="{{ form.year_of_study.id_for_label }}"
+                >
+                    Year of Study
+                </label>
+
+                <div class="form-help">
+                    Select your current year of study.
+                </div>
+
+                <select
+                    name="{{ form.year_of_study.name }}"
+                    id="{{ form.year_of_study.id_for_label }}"
+                    class="profile-select"
+                >
+
+                    {% for value, label in form.year_of_study.field.choices %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if form.year_of_study.value == value %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Completed Courses -->
+
+            <div class="form-section">
+
+                <label class="form-label">
+                    Completed Courses
+                </label>
+
+                <div class="form-help">
+                    Select the courses you have already completed.
+                    These can later be used to improve your
+                    course recommendations.
+                </div>
+
+
+                <!-- Search -->
+
+                <input
+                    type="text"
+                    id="courseSearch"
+                    class="course-search"
+                    placeholder="Search courses or universities..."
+                >
+
+
+                <!-- Count -->
+
+                <div class="selected-count">
+
+                    Selected:
+                    <span id="selectedCount">
+                        0
+                    </span>
+                    courses
+
+                </div>
+
+
+                <!-- Course List -->
+
+                <div class="course-list">
+
+                    {% for checkbox in form.completed_courses %}
+
+                        <label
+                            class="course-option"
+                            data-course="{{ checkbox.choice_label|lower }}"
+                        >
+
+                            {{ checkbox.tag }}
+
+                            <span class="course-name">
+                                {{ checkbox.choice_label }}
+                            </span>
+
+                        </label>
+
+                    {% empty %}
+
+                        <div class="no-results">
+                            No courses available.
+                        </div>
+
+                    {% endfor %}
+
+
+                    <div
+                        id="noResults"
+                        class="no-results"
+                    >
+                        No courses match your search.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Save -->
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                Save Profile
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const searchInput =
+        document.getElementById("courseSearch");
+
+    const courseOptions =
+        document.querySelectorAll(".course-option");
+
+    const noResults =
+        document.getElementById("noResults");
+
+    const selectedCount =
+        document.getElementById("selectedCount");
+
+
+    /*
+        Update selected course count
+    */
+
+    function updateSelectedCount() {
+
+        const checkedCourses =
+            document.querySelectorAll(
+                '.course-option input[type="checkbox"]:checked'
+            );
+
+        selectedCount.textContent =
+            checkedCourses.length;
+    }
+
+
+    /*
+        Search courses
+    */
+
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+            const searchTerm =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+            let visibleCourses = 0;
+
+
+            courseOptions.forEach(
+                function (option) {
+
+                    const courseText =
+                        option.dataset.course;
+
+                    if (
+                        courseText.includes(
+                            searchTerm
+                        )
+                    ) {
+
+                        option.style.display =
+                            "flex";
+
+                        visibleCourses++;
+
+                    } else {
+
+                        option.style.display =
+                            "none";
+                    }
+
+                }
+            );
+
+
+            if (visibleCourses === 0) {
+
+                noResults.style.display =
+                    "block";
+
+            } else {
+
+                noResults.style.display =
+                    "none";
+            }
+
+        }
+    );
+
+
+    /*
+        Update count whenever
+        a checkbox is selected
+    */
+
+    document.addEventListener(
+        "change",
+        function (event) {
+
+            if (
+                event.target.matches(
+                    '.course-option input[type="checkbox"]'
+                )
+            ) {
+
+                updateSelectedCount();
+
+            }
+
+        }
+    );
+
+
+    /*
+        Initial count
+    */
+
+    updateSelectedCount();
+
+</script>
+
+{% endblock %}

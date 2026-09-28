@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Course Finder
+        {% endblock %}
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f8fc;
+            color: #222;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            width: 100%;
+            background: white;
+            border-bottom: 1px solid #e8e8e8;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            height: 70px;
+
+            margin: 0 auto;
+            padding: 0 25px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+
+            text-decoration: none;
+            color: #222;
+        }
+
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-right: 10px;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #667eea,
+                #764ba2
+            );
+
+            color: white;
+            font-size: 20px;
+        }
+
+        .navbar-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-link {
+            padding: 10px 16px;
+
+            border-radius: 9px;
+
+            color: #555;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .navbar-link:hover {
+            background: #f0f2ff;
+            color: #667eea;
+        }
+
+        .logout-button {
+            padding: 10px 17px;
+
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                #667eea,
+                #764ba2
+            );
+
+            color: white;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 14px rgba(102, 126, 234, 0.3);
+        }
+        
+
+        .liked-link:hover {
+            background: #fff0f2;
+            color: #d62845;
+        }
+        /* =========================
+        PAGE CONTENT
+        ========================= */
+
+        .page-container {
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 30px 25px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .navbar-container {
+                height: 65px;
+                padding: 0 15px;
+            }
+
+            .navbar-title {
+                font-size: 17px;
+            }
+
+            .navbar-logo {
+                width: 36px;
+                height: 36px;
+                font-size: 17px;
+            }
+
+            .navbar-link {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            .logout-button {
+                padding: 8px 11px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar">
+
+        <div class="navbar-container">
+
+            <a
+                href="{% url 'home' %}"
+                class="navbar-brand"
+            >
+
+                <div class="navbar-logo">
+                    🎓
+                </div>
+
+                <span class="navbar-title">
+                    Course Finder
+                </span>
+
+            </a>
+
+
+            <div class="navbar-links">
+
+                <!-- Home -->
+                <a
+                    href="{% url 'home' %}"
+                    class="navbar-link"
+                >
+                    Home
+                </a>
+                
+                <!-- Profile -->
+                <a
+                    href="{% url 'student_profile' %}"
+                    class="navbar-link"
+                >
+                    Profile
+                </a>
+
+                <!-- Liked Courses -->
+                <a
+                    href="{% url 'liked_courses' %}"
+                    class="navbar-link liked-link"
+                >
+                    ♥ Liked
+                </a>
+
+                <!-- Logout -->
+                <a
+                    href="{% url 'logout' %}"
+                    class="logout-button"
+                >
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Page-specific content -->
+
+    <main class="page-container">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</body>
+
+</html>

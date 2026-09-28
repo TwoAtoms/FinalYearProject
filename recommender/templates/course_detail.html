@@ -1,0 +1,494 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+    Recommended Courses 
+{% endblock %}
+
+{% block content %}
+<style>
+    .recommendation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .recommendation-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid #e8e8e8;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        transition: all 0.25s ease;
+    }
+
+    .recommendation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+    }
+
+    .recommendation-course-name { 
+        font-size: 20px; 
+        font-weight: 700; 
+        color: #222; 
+        line-height: 1.4; 
+        margin-bottom: 6px; }
+        
+    .recommendation-university { 
+        font-size: 14px; 
+        color: #777; 
+        margin-bottom: 18px; 
+    }
+
+    .recommendation-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .recommendation-info:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #777;
+        font-size: 14px;
+    }
+
+    .difficulty {
+        background: #eef2ff;
+        color: #667eea;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .rating {
+        color: #f59e0b;
+        font-weight: 700;
+    }
+
+    .recommendation-score {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .no-recommendations {
+        color: #777;
+        background: #f8f8f8;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+    }
+    .like-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    }
+
+    .like-button:hover {
+        background-color: #fff0f2;
+        border-color: #ff6b81;
+        color: #e63956;
+    }
+
+    .like-button:active {
+        transform: scale(0.96);
+    }
+
+    .like-button.liked {
+    background-color: #ffe6eb;
+    border-color: #ff5c75;
+    color: #e63956;
+    }
+
+    .current-course-card {
+    background: #f5f7fb;
+    border: 1px solid #dfe3eb;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 25px;
+    }
+
+    .current-course-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #667085;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .current-course-name {
+        margin: 0 0 5px;
+        font-size: 22px;
+        color: #1d2939;
+    }
+
+    .current-course-university {
+        color: #667085;
+        margin-bottom: 14px;
+    }
+
+    .current-course-info {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .current-course-description {
+        margin: 0;
+        color: #475467;
+        line-height: 1.5;
+    }
+
+    .recommendations-title {
+        margin-bottom: 15px;
+    }
+
+    .course-url-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 14px;
+    background-color: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    }
+
+    .course-url-button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .current-course-description-container { 
+        margin-top: 12px; 
+    } 
+    
+    .current-course-description { 
+        color: #475467;
+        line-height: 1.5; 
+        margin: 0; 
+    } 
+    
+    .current-course-description.collapsed { 
+        display: -webkit-box; 
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical; 
+        overflow: hidden; 
+    } 
+    
+    .description-toggle { 
+        margin-top: 6px; 
+        padding: 0; 
+        border: none; 
+        background: none; 
+        color: #2563eb; 
+        font-size: 14px; 
+        font-weight: 600; 
+        cursor: pointer; 
+    } 
+    
+    .description-toggle:hover { 
+        text-decoration: underline; 
+    } 
+
+    .current-course-like-button {
+    border: none;
+    background: none;
+    font-size: 28px;
+    color: #98a2b3;
+    cursor: pointer;
+    padding: 4px 8px;
+    }
+
+    .current-course-like-button:hover {
+        color: #e11d48;
+    }
+
+    .current-course-like-button.liked {
+        color: #e11d48;
+    }
+
+    .recommendation-reasons {
+    margin-top: 18px;
+    padding: 14px;
+
+    background: #f8f9ff;
+
+    border-radius: 12px;
+
+    border: 1px solid #e4e7ff;
+    }
+
+    .reasons-title {
+        font-size: 14px;
+        font-weight: 700;
+
+        color: #344054;
+
+        margin-bottom: 8px;
+    }
+
+    .reasons-list {
+        list-style: none;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .reasons-list li {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+
+        margin-bottom: 6px;
+
+        font-size: 13px;
+
+        color: #667085;
+
+        line-height: 1.4;
+    }
+
+    .reasons-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .reason-check {
+        color: #667eea;
+
+        font-weight: 700;
+
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+        .recommendation-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script> 
+    function toggleDescription() { 
+
+        const description = 
+            document.getElementById("course-description"); 
+            
+        const button = 
+            document.getElementById("description-toggle"); 
+
+        description.classList.toggle("collapsed"); 
+        
+        if (description.classList.contains("collapsed")) { 
+            button.textContent = "Read more"; 
+        } else { 
+            button.textContent = "Show less"; 
+        } 
+    } 
+</script>
+
+<div class="current-course-card">
+
+    <div class="current-course-label">
+        Currently Viewing
+    </div>
+
+    <h2 class="current-course-name">
+        {{ course.course_name }}
+    </h2>
+
+    <div class="current-course-university">
+        {{ course.university }}
+    </div>
+
+    <div class="current-course-info">
+
+        <span>
+            <strong>Difficulty:</strong>
+            {{ course.difficulty }}
+        </span>
+
+        <span>
+            <strong>Rating:</strong>
+            ★ {{ course.rating }}
+        </span>
+
+    </div>
+
+    {% if course.description %} 
+        <div class="current-course-description-container"> 
+            <p 
+                id="course-description" 
+                class="current-course-description collapsed" 
+            > 
+                {{ course.description }} 
+            </p> 
+
+            <button 
+                type="button" 
+                id="description-toggle" 
+                class="description-toggle" 
+                onclick="toggleDescription()" 
+            > 
+                Read more 
+            </button>
+        </div> 
+    {% endif %}
+    
+    <form
+    method="POST"
+    action="{% url 'like_course' course.course_id %}"
+    >
+        {% csrf_token %}
+
+        <input
+            type="hidden"
+            name="current_course_id"
+            value="{{ course.course_id }}"
+        >
+
+        <button
+            type="submit"
+            class="current-course-like-button {% if current_course_liked %}liked{% endif %}"
+            aria-label="{% if current_course_liked %}Unlike{% else %}Like{% endif %} course"
+        >
+            {% if current_course_liked %}
+                ♥
+            {% else %}
+                ♡
+            {% endif %}
+        </button>
+
+    </form>
+    {% if course.url %}
+        <a
+            href="{{ course.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="course-url-button"
+        >
+            For More Info
+        </a>
+    {% endif %}
+</div>
+
+<h2>Recommended Courses</h2>
+
+<div class="recommendation-grid">
+
+    {% for item in recommendations %}
+
+    <div class="recommendation-card">
+
+        <!-- Course name -->
+        <div class="recommendation-course-name">
+            {{ item.course_name }}
+        </div>
+
+        <!-- University -->
+        <div class="recommendation-university">
+            {{ item.university }}
+        </div>
+
+        <!-- Difficulty -->
+        <div class="recommendation-info">
+            <span class="info-label">
+                Difficulty
+            </span>
+
+            <span class="difficulty">
+                {{ item.difficulty }}
+            </span>
+        </div>
+
+        <!-- Rating -->
+        <div class="recommendation-info">
+            <span class="info-label">
+                Rating
+            </span>
+
+            <span class="rating">
+                ★ {{ item.rating }}
+            </span>
+        </div>
+
+        <!-- Recommendation Score -->
+        <div class="recommendation-info">
+            <span class="info-label">
+                Recommendation Score
+            </span>
+
+            <span class="recommendation-score">
+                {{ item.final_score|floatformat:2 }}
+            </span>
+        </div>
+        
+        <!-- Recommendation Reasons -->
+        <div class="recommendation-reasons">
+
+            <div class="reasons-title">
+                Why this course?
+            </div>
+
+            <ul class="reasons-list">
+
+                {% for reason in item.reasons %}
+
+                    <li>
+                        <span class="reason-check">✓</span>
+                        {{ reason }}
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+        <!-- Like button -->
+        <form method="POST" action="{% url 'like_course' item.course_id %}">
+            {% csrf_token %}
+
+            <input type="hidden" name="current_course_id" value="{{ course.course_id }}">
+
+            <button
+                type="submit"
+                class="like-button {% if item.liked %}liked{% endif %}"
+            >
+                {% if item.liked %}
+                    ♥ 
+                {% else %}
+                    ♡ 
+                {% endif %}
+            </button>
+        </form>
+    </div>
+
+    {% empty %}
+
+        <div class="no-recommendations">
+            No recommendations available at the moment.
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
